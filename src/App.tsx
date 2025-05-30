@@ -38,8 +38,8 @@ function App() {
   };
 
   return (
-    <div className="d-flex flex-column w-50 p-3">
-      <div className="rounded border" style={{ height: "500px" }}>
+    <div className="d-flex flex-column flex-md-row p-3 gap-3">
+      <div className="rounded border w-100" style={{ height: "500px" }}>
         <div
           className="d-flex justify-content-center align-items-center bg-primary-subtle rounded-top p-2"
           style={{ height: "50px" }}
@@ -47,7 +47,7 @@ function App() {
           <h5 className="m-0">Chat with Portal Pete</h5>
         </div>
         <div
-          className="rounded-top overflow-scroll p-3 w-100"
+          className="rounded-top overflow-scroll p-3"
           style={{ height: "400px" }}
         >
           {messageLog.map((message, index) => (
@@ -82,6 +82,20 @@ function App() {
           >
             <IoSend />
           </button>
+        </div>
+      </div>
+      <div className="rounded border w-100" style={{ height: "500px" }}>
+        <div
+          className="d-flex justify-content-center align-items-center bg-secondary-subtle rounded-top p-2"
+          style={{ height: "50px" }}
+        >
+          <h5 className="m-0">Context</h5>
+        </div>
+        <div
+          className="d-flex flex-column justify-content-center align-items-center"
+          style={{ height: "450px" }}
+        >
+          <span>Coming soon</span>
         </div>
       </div>
     </div>
