@@ -1,10 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, type ChangeEvent } from "react";
+import axios from "axios";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [input, setInput] = useState("");
+  const [response, setResponse] = useState<{ reply: string }>();
+  const [messageLog, setMessageLog] = useState<
+    { role: string; content: string }[]
+  >([]);
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("http://localhost:3001/api/chat", {
+        messages: [...messageLog, { role: "user", content: input }],
+      });
+      setMessageLog((prev) => [
+        ...prev,
+        { role: "user", content: input },
+        { role: "assistant", content: response.data.reply },
+      ]);
+      setResponse(response.data);
+      console.log("Server response:", response.data);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+    setInput("");
+  };
 
   return (
     <>
@@ -18,18 +41,18 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <input
+          value={input}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setInput(e.target.value)
+          }
+        />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <button onClick={handleSubmit}>Submit</button>
+      <br />
+      <span>{response?.reply}</span>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
