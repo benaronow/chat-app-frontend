@@ -13,7 +13,6 @@ function App() {
   const [messageLog, setMessageLog] = useState<
     { role: string; content: string }[]
   >([]);
-  console.log(messageLog);
 
   useEffect(() => {
     const contextMessage = [
