@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useBreakpoint } from "./useBreakpoint";
-import Chat from "./components/Chat";
+import { Chat } from "./components/Chat";
 import { Context } from "./components/Context";
 import { ViewToggle } from "./components/ViewToggle";
 import { useAppContext } from "./providers/AppProvider";

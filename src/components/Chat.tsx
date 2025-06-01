@@ -1,8 +1,9 @@
-import { useEffect, type ChangeEvent, type KeyboardEvent } from "react";
+import { type ChangeEvent, type KeyboardEvent } from "react";
 import { useBreakpoint } from "../useBreakpoint";
 import { useAppContext, type Model } from "../providers/AppProvider";
 import axios from "axios";
 import { IoSend } from "react-icons/io5";
+import { GrPowerReset } from "react-icons/gr";
 
 export const Chat = () => {
   const { baseCompHeight } = useBreakpoint();
@@ -14,26 +15,6 @@ export const Chat = () => {
     messageLog,
     changeMessageLog,
   } = useAppContext();
-
-  useEffect(() => {
-    const contextMessage = [
-      { role: "user", content: "CONTEXT: My name is Ethel" },
-    ];
-    const sendContextMessage = async () => {
-      changeMessageLog(contextMessage, "set");
-      try {
-        await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/chat`, {
-          model,
-          messages: contextMessage,
-        });
-      } catch (error) {
-        console.error("Error sending initial message:", error);
-        changeMessageLog([], "set");
-      }
-    };
-
-    if (messageLog.length === 0) sendContextMessage();
-  }, [model, messageLog.length, changeMessageLog]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -67,6 +48,13 @@ export const Chat = () => {
 
   const handleModelChange = (e: ChangeEvent<HTMLSelectElement>) => {
     changeModel(e.target.value as Model);
+  };
+
+  const handleClearMessages = () => {
+    const contextMessages = messageLog.filter((m) =>
+      m.content.startsWith("CONTEXT:")
+    );
+    changeMessageLog([contextMessages[contextMessages.length - 1]], "set");
   };
 
   return (
@@ -118,6 +106,13 @@ export const Chat = () => {
         className="rounded-bottom bg-secondary-subtle w-100 d-flex p-2 gap-2"
         style={{ height: "50px" }}
       >
+        <button
+          type="button"
+          className="btn btn-secondary d-flex align-items-center fs-5"
+          onClick={handleClearMessages}
+        >
+          <GrPowerReset />
+        </button>
         <input
           className="w-100 form-control"
           value={input}
@@ -135,5 +130,3 @@ export const Chat = () => {
     </div>
   );
 };
-
-export default Chat;

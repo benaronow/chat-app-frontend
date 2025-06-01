@@ -3,5 +3,10 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "compilerOptions": {
+    "target": "es2024",
+    "lib": ["dom", "es2024"],
+    "module": "CommonJS"
+  }
 }
