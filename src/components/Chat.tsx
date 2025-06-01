@@ -98,7 +98,7 @@ export const Chat = () => {
         style={{ height: `calc(${baseCompHeight} - 100px)` }}
       >
         {messageLog
-          .filter((m) => !m.content.startsWith("CONTEXT:"))
+          .filter((m) => !m.content?.startsWith("CONTEXT:"))
           .map((message, index) => (
             <div key={index} className={`mb-2 ${message.role}`}>
               <strong>
