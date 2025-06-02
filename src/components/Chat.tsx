@@ -1,4 +1,10 @@
-import { useEffect, useRef, type ChangeEvent, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  type ChangeEvent,
+  type KeyboardEvent,
+} from "react";
 import { useBreakpoint } from "../useBreakpoint";
 import { useAppContext, type Model } from "../providers/AppProvider";
 import axios from "axios";
@@ -14,9 +20,15 @@ export const Chat = () => {
     changeInput,
     messageLog,
     changeMessageLog,
+    initialLoaded,
   } = useAppContext();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const mostRecentMessage = useMemo(
+    () => messageLog[messageLog.length - 1]?.content,
+    [messageLog]
+  );
 
   useEffect(() => {
     if (containerRef.current) {
@@ -25,7 +37,7 @@ export const Chat = () => {
         behavior: "smooth",
       });
     }
-  }, [messageLog.length]);
+  }, [messageLog.length, mostRecentMessage]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -39,6 +51,7 @@ export const Chat = () => {
 
   const handleSubmit = async () => {
     changeMessageLog([{ role: "user", content: input }], "add");
+    changeMessageLog([{ role: "assistant", content: "Thinking..." }], "add");
     changeInput("");
     try {
       const response = await axios.post(
@@ -50,7 +63,7 @@ export const Chat = () => {
       );
       changeMessageLog(
         [{ role: "assistant", content: response.data.reply }],
-        "add"
+        "setLast"
       );
     } catch (error) {
       console.error("Error sending message:", error);
@@ -65,7 +78,7 @@ export const Chat = () => {
     const contextMessages = messageLog.filter((m) =>
       m.content.startsWith("CONTEXT:")
     );
-    changeMessageLog([contextMessages[contextMessages.length - 1]], "set");
+    changeMessageLog([contextMessages[contextMessages.length - 1]], "reset");
   };
 
   return (
@@ -98,42 +111,48 @@ export const Chat = () => {
         </select>
       </div>
       <div
-        className="d-flex w-100"
+        className="d-flex justify-content-center align-items-center w-100"
         style={{ height: `calc(${baseCompHeight} - 100px)` }}
       >
-        <div
-          className="d-flex flex-column justify-content-end p-2"
-          style={{ height: `calc(${baseCompHeight} - 100px)` }}
-        >
-          <img src="/portal-pete.png" height={50} width={50} />
-        </div>
-        <div
-          className="d-flex flex-column gap-3 rounded-top overflow-scroll py-3 pe-3 w-100"
-          style={{ height: `calc(${baseCompHeight} - 100px)` }}
-          ref={containerRef}
-        >
-          <div
-            style={{
-              height: `calc(${baseCompHeight} - 100px - 2rem)`,
-              minHeight: `calc(${baseCompHeight} - 100px - 2rem)`,
-            }}
-          />
-          {messageLog
-            .filter((m) => !m.content?.startsWith("CONTEXT:"))
-            .map((message, index) => (
+        {initialLoaded ? (
+          <>
+            <div
+              className="d-flex flex-column justify-content-end p-2"
+              style={{ height: `calc(${baseCompHeight} - 100px)` }}
+            >
+              <img src="/portal-pete.png" height={50} width={50} />
+            </div>
+            <div
+              className="d-flex flex-column gap-3 rounded-top overflow-scroll py-3 pe-3 w-100"
+              style={{ height: `calc(${baseCompHeight} - 100px)` }}
+              ref={containerRef}
+            >
               <div
-                key={index}
-                className={`bg-${
-                  message.role === "user" ? "primary" : "secondary"
-                } text-white px-3 py-2 rounded align-self-${
-                  message.role === "user" ? "end" : "start"
-                }`}
-                style={{ maxWidth: "75%" }}
-              >
-                {message.content}
-              </div>
-            ))}
-        </div>
+                style={{
+                  height: `calc(${baseCompHeight} - 100px - 2rem)`,
+                  minHeight: `calc(${baseCompHeight} - 100px - 2rem)`,
+                }}
+              />
+              {messageLog
+                .filter((m) => !m.content?.startsWith("CONTEXT:"))
+                .map((message, index) => (
+                  <div
+                    key={index}
+                    className={`bg-${
+                      message.role === "user" ? "primary" : "secondary"
+                    } text-white px-3 py-2 rounded align-self-${
+                      message.role === "user" ? "end" : "start"
+                    }`}
+                    style={{ maxWidth: "75%" }}
+                  >
+                    {message.content}
+                  </div>
+                ))}
+            </div>
+          </>
+        ) : (
+          <span className="fs-5 fw-bold">Portal Pete is loading...</span>
+        )}
       </div>
       <div
         className="rounded-bottom bg-secondary-subtle w-100 d-flex p-2 gap-2"
@@ -143,6 +162,7 @@ export const Chat = () => {
           type="button"
           className="btn btn-secondary d-flex align-items-center fs-5"
           onClick={handleClearMessages}
+          disabled={!initialLoaded}
         >
           <GrPowerReset />
         </button>
@@ -151,11 +171,14 @@ export const Chat = () => {
           value={input}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
+          placeholder="Type your message here..."
+          disabled={!initialLoaded}
         />
         <button
           type="button"
           className="btn btn-primary d-flex align-items-center"
           onClick={handleSubmit}
+          disabled={!initialLoaded}
         >
           <IoSend />
         </button>

@@ -10,7 +10,7 @@ import {
 
 export type Model = "gpt" | "claude" | "deepseek" | "q";
 type Comp = "chat" | "context";
-type LogType = "add" | "set";
+type LogType = "add" | "setLast" | "reset";
 type Context = {
   name: string;
 };
@@ -29,6 +29,7 @@ interface AppContextProps {
   changeVisibleComp: (comp: Comp) => void;
   context: Context;
   changeContext: (context: Context) => void;
+  initialLoaded: boolean;
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -44,8 +45,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     { role: string; content: string }[]
   >([]);
   const changeMessageLog = useCallback(
-    (newLog: { role: string; content: string }[], type: LogType) =>
-      setMessageLog((prev) => (type === "add" ? [...prev, ...newLog] : newLog)),
+    (newLog: { role: string; content: string }[], type: LogType) => {
+      if (type === "setLast")
+        setMessageLog((prev) => [
+          ...prev.slice(0, -1),
+          newLog[newLog.length - 1],
+        ]);
+      if (type === "reset") setMessageLog(newLog);
+      if (type === "add") setMessageLog((prev) => [...prev, ...newLog]);
+    },
     []
   );
 
@@ -61,6 +69,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     []
   );
 
+  const [initialLoaded, setInitialLoaded] = useState(false);
+
   useEffect(() => {
     const sendContextMessage = async () => {
       const contextMessage = [
@@ -74,6 +84,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           messages: contextMessage,
           qInfo: { conversationId: "", parentMessageId: "" },
         });
+        setInitialLoaded(true);
       } catch (error) {
         console.error("Error sending initial message:", error);
       }
@@ -95,6 +106,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         changeVisibleComp,
         context,
         changeContext,
+        initialLoaded,
       }}
     >
       {children}
