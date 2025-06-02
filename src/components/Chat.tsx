@@ -50,8 +50,8 @@ export const Chat = () => {
   };
 
   const handleSubmit = async () => {
-    changeMessageLog([{ role: "user", content: input }], "add");
-    changeMessageLog([{ role: "assistant", content: "Thinking..." }], "add");
+    changeMessageLog({ role: "user", content: input }, "add");
+    changeMessageLog({ role: "assistant", content: "Thinking..." }, "add");
     changeInput("");
     try {
       const response = await axios.post(
@@ -62,7 +62,7 @@ export const Chat = () => {
         }
       );
       changeMessageLog(
-        [{ role: "assistant", content: response.data.reply }],
+        { role: "assistant", content: response.data.reply },
         "setLast"
       );
     } catch (error) {
@@ -78,7 +78,7 @@ export const Chat = () => {
     const contextMessages = messageLog.filter((m) =>
       m.content.startsWith("CONTEXT:")
     );
-    changeMessageLog([contextMessages[contextMessages.length - 1]], "reset");
+    changeMessageLog(contextMessages[contextMessages.length - 1], "reset");
   };
 
   return (
@@ -162,7 +162,7 @@ export const Chat = () => {
           type="button"
           className="btn btn-secondary d-flex align-items-center fs-5"
           onClick={handleClearMessages}
-          disabled={!initialLoaded}
+          disabled={!initialLoaded || messageLog.length <= 1}
         >
           <GrPowerReset />
         </button>

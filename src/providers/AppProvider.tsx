@@ -10,9 +10,10 @@ import {
 
 export type Model = "gpt" | "claude" | "deepseek" | "q";
 type Comp = "chat" | "context";
-type LogType = "add" | "setLast" | "reset";
-type Context = {
-  name: string;
+type LogType = "add" | "setLast" | "reset" | "context";
+export type Context = {
+  name?: string;
+  investmentValue?: string;
 };
 
 interface AppContextProps {
@@ -22,7 +23,7 @@ interface AppContextProps {
   changeInput: (input: string) => void;
   messageLog: { role: string; content: string }[];
   changeMessageLog: (
-    log: { role: string; content: string }[],
+    log: { role: string; content: string },
     type: LogType
   ) => void;
   visibleComp: Comp;
@@ -45,14 +46,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     { role: string; content: string }[]
   >([]);
   const changeMessageLog = useCallback(
-    (newLog: { role: string; content: string }[], type: LogType) => {
+    (newLog: { role: string; content: string }, type: LogType) => {
+      if (type === "add") setMessageLog((prev) => [...prev, newLog]);
+      if (type === "reset") setMessageLog([newLog]);
       if (type === "setLast")
-        setMessageLog((prev) => [
-          ...prev.slice(0, -1),
-          newLog[newLog.length - 1],
-        ]);
-      if (type === "reset") setMessageLog(newLog);
-      if (type === "add") setMessageLog((prev) => [...prev, ...newLog]);
+        setMessageLog((prev) => [...prev.slice(0, -1), newLog]);
+      if (type === "context") {
+        setMessageLog((prev) => [newLog, ...prev.slice(1)]);
+      }
     },
     []
   );
@@ -63,7 +64,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     []
   );
 
-  const [context, setContext] = useState<Context>({ name: "" });
+  const [context, setContext] = useState<Context>({});
   const changeContext = useCallback(
     (newContext: Context) => setContext(newContext),
     []
@@ -73,11 +74,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const sendContextMessage = async () => {
-      const contextMessage = [
-        { role: "user", content: `CONTEXT: Name - ${context?.name ?? "N/A"}.` },
-      ];
+      const contextMessage = {
+        role: "user",
+        content:
+          "CONTEXT: " +
+          `Name - ${context?.name ?? "N/A"}, ` +
+          `Investment Value - ${context?.investmentValue ?? "N/A"}.`,
+      };
 
-      changeMessageLog(contextMessage, "add");
+      changeMessageLog(contextMessage, "context");
+
       try {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/chat`, {
           model,
@@ -91,7 +97,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     };
 
     sendContextMessage();
-  }, [model, changeMessageLog, context]);
+  }, [changeMessageLog, context, model]);
 
   return (
     <AppContext.Provider

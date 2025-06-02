@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useBreakpoint } from "./useBreakpoint";
 import { Chat } from "./components/Chat";
-import { Context } from "./components/Context";
+import { ContextInput } from "./components/ContextInput";
 import { ViewToggle } from "./components/ViewToggle";
 import { useAppContext } from "./providers/AppProvider";
 
@@ -35,7 +35,7 @@ function App() {
       </div>
       <div className="d-flex flex-row p-3 gap-3">
         {showChat && <Chat />}
-        {showContext && <Context />}
+        {showContext && <ContextInput />}
       </div>
       {(breakpoint === "base" || breakpoint === "sm") && <ViewToggle />}
     </div>
