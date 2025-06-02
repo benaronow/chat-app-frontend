@@ -1,4 +1,4 @@
-import { type ChangeEvent, type KeyboardEvent } from "react";
+import { useEffect, useRef, type ChangeEvent, type KeyboardEvent } from "react";
 import { useBreakpoint } from "../useBreakpoint";
 import { useAppContext, type Model } from "../providers/AppProvider";
 import axios from "axios";
@@ -15,6 +15,17 @@ export const Chat = () => {
     messageLog,
     changeMessageLog,
   } = useAppContext();
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messageLog.length]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -87,25 +98,42 @@ export const Chat = () => {
         </select>
       </div>
       <div
-        className="rounded-top overflow-scroll p-3"
+        className="d-flex w-100"
         style={{ height: `calc(${baseCompHeight} - 100px)` }}
       >
-        {messageLog
-          .filter((m) => !m.content?.startsWith("CONTEXT:"))
-          .map((message, index) => (
-            <div key={index} className={`mb-2 ${message.role}`}>
-              <strong>
-                {`${
-                  message.role === "user"
-                    ? "User"
-                    : message.role === "assistant"
-                    ? "Portal Pete"
-                    : "Strange unknown entity"
-                }: `}
-              </strong>
-              {message.content}
-            </div>
-          ))}
+        <div
+          className="d-flex flex-column justify-content-end p-2"
+          style={{ height: `calc(${baseCompHeight} - 100px)` }}
+        >
+          <img src="/portal-pete.png" height={50} width={50} />
+        </div>
+        <div
+          className="d-flex flex-column gap-3 rounded-top overflow-scroll py-3 pe-3"
+          style={{ height: `calc(${baseCompHeight} - 100px)` }}
+          ref={containerRef}
+        >
+          <div
+            style={{
+              height: `calc(${baseCompHeight} - 100px - 2rem)`,
+              minHeight: `calc(${baseCompHeight} - 100px - 2rem)`,
+            }}
+          />
+          {messageLog
+            .filter((m) => !m.content?.startsWith("CONTEXT:"))
+            .map((message, index) => (
+              <div
+                key={index}
+                className={`bg-${
+                  message.role === "user" ? "primary" : "secondary"
+                } text-white px-3 py-2 rounded align-self-${
+                  message.role === "user" ? "end" : "start"
+                }`}
+                style={{ maxWidth: "75%" }}
+              >
+                {message.content}
+              </div>
+            ))}
+        </div>
       </div>
       <div
         className="rounded-bottom bg-secondary-subtle w-100 d-flex p-2 gap-2"
