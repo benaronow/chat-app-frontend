@@ -14,10 +14,6 @@ type LogType = "add" | "set";
 type Context = {
   name: string;
 };
-type QInfo = {
-  conversationId: string;
-  parentMessageId: string;
-};
 
 interface AppContextProps {
   model: Model;
@@ -33,8 +29,6 @@ interface AppContextProps {
   changeVisibleComp: (comp: Comp) => void;
   context: Context;
   changeContext: (context: Context) => void;
-  qInfo: QInfo;
-  changeQInfo: (qInfo: QInfo) => void;
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -67,46 +61,26 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     []
   );
 
-  const [qInfo, setQInfo] = useState<QInfo>({
-    conversationId: "",
-    parentMessageId: "",
-  });
-  const changeQInfo = useCallback((newQInfo: QInfo) => setQInfo(newQInfo), []);
+  useEffect(() => {
+    const sendContextMessage = async () => {
+      const contextMessage = [
+        { role: "user", content: `CONTEXT: Name - ${context?.name ?? "N/A"}.` },
+      ];
 
-  const sendContextMessage = useCallback(async () => {
-    const contextMessage = [
-      { role: "user", content: `CONTEXT: Name - ${context?.name ?? "N/A"}.` },
-    ];
-
-    changeMessageLog(contextMessage, "add");
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/chat`,
-        {
+      changeMessageLog(contextMessage, "add");
+      try {
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/chat`, {
           model,
           messages: contextMessage,
           qInfo: { conversationId: "", parentMessageId: "" },
-        }
-      );
-
-      if (model === "q") {
-        changeQInfo(response.data.qInfo);
+        });
+      } catch (error) {
+        console.error("Error sending initial message:", error);
       }
-    } catch (error) {
-      console.error("Error sending initial message:", error);
-    }
-  }, [model, changeMessageLog, context, changeQInfo]);
+    };
 
-  useEffect(() => {
     sendContextMessage();
-  }, []);
-
-  useEffect(() => {
-    if (model === "q") {
-      changeMessageLog([], "set");
-      sendContextMessage();
-    }
-  }, [model]);
+  }, [model, changeMessageLog, context]);
 
   return (
     <AppContext.Provider
@@ -121,8 +95,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         changeVisibleComp,
         context,
         changeContext,
-        qInfo,
-        changeQInfo,
       }}
     >
       {children}

@@ -14,8 +14,6 @@ export const Chat = () => {
     changeInput,
     messageLog,
     changeMessageLog,
-    qInfo,
-    changeQInfo,
   } = useAppContext();
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -37,17 +35,12 @@ export const Chat = () => {
         {
           model,
           messages: [...messageLog, { role: "user", content: input }],
-          qInfo,
         }
       );
       changeMessageLog(
         [{ role: "assistant", content: response.data.reply }],
         "add"
       );
-      changeQInfo({
-        conversationId: response.data.qInfo.conversationId,
-        parentMessageId: response.data.qInfo.parentMessageId,
-      });
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -92,9 +85,6 @@ export const Chat = () => {
           </option>
           <option value="deepseek" label="Deepseek R1 via Bedrock">
             Deepseek R1 via Bedrock
-          </option>
-          <option value="q" label="Amazon Q Business">
-            Amazon Q Business
           </option>
         </select>
       </div>
