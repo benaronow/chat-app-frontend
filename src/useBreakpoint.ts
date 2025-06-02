@@ -40,14 +40,14 @@ export function useBreakpoint(): {
     switch (breakpoint) {
       case "base":
       case "sm":
-        return "100dvh - 2rem - 50px";
+        return "100dvh - 2rem - 100px";
       case "md":
       case "lg":
       case "xl":
       case "2xl":
-        return "100dvh - 2rem";
+        return "100dvh - 2rem - 50px";
       default:
-        return "100dvh - 2rem";
+        return "100dvh - 2rem - 50px";
     }
   }, [breakpoint]);
 

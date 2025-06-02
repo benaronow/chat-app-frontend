@@ -66,9 +66,7 @@ export const Chat = () => {
         className="d-flex justify-content-center align-items-center bg-primary-subtle rounded-top p-2"
         style={{ height: "50px" }}
       >
-        <span className="fs-4 fw-bold w-100 me-3 text-nowrap">
-          Chat with Portal Pete
-        </span>
+        <span className="fs-4 fw-bold w-100 ms-1 text-nowrap">Chat</span>
         <select
           className="w-100 form-select"
           onChange={handleModelChange}

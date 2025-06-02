@@ -27,6 +27,12 @@ function App() {
 
   return (
     <div className="d-flex flex-column">
+      <div
+        className="d-flex w-100 justify-content-center align-items-center bg-dark text-white"
+        style={{ height: "50px" }}
+      >
+        <span className="fs-2 fw-bold">Portal Pete</span>
+      </div>
       <div className="d-flex flex-row p-3 gap-3">
         {showChat && <Chat />}
         {showContext && <Context />}

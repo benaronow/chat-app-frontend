@@ -5,7 +5,7 @@ export const ViewToggle = () => {
 
   return (
     <div
-      className="d-flex w-100 justify-content-center align-items-center gap-3 bg-secondary-subtle text-nowrap"
+      className="d-flex w-100 justify-content-center align-items-center gap-3 bg-dark text-white text-nowrap"
       style={{ height: "50px" }}
     >
       <label className="d-flex align-items-center form-label mb-0">
