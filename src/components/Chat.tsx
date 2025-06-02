@@ -108,7 +108,7 @@ export const Chat = () => {
           <img src="/portal-pete.png" height={50} width={50} />
         </div>
         <div
-          className="d-flex flex-column gap-3 rounded-top overflow-scroll py-3 pe-3"
+          className="d-flex flex-column gap-3 rounded-top overflow-scroll py-3 pe-3 w-100"
           style={{ height: `calc(${baseCompHeight} - 100px)` }}
           ref={containerRef}
         >
