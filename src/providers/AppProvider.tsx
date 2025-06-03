@@ -9,8 +9,8 @@ import {
 } from "react";
 
 export type Model = "gpt" | "claude" | "deepseek" | "q";
-type Comp = "chat" | "context";
-type LogType = "add" | "setLast" | "reset" | "context";
+type Comp = "accounts" | "spending";
+type LogType = "add" | "reset" | "clear" | "setLast" | "context";
 export type Context = {
   name?: string;
   investmentValue?: string;
@@ -23,11 +23,13 @@ interface AppContextProps {
   changeInput: (input: string) => void;
   messageLog: { role: string; content: string }[];
   changeMessageLog: (
-    log: { role: string; content: string },
-    type: LogType
+    type: LogType,
+    message?: { role: string; content: string }
   ) => void;
   visibleComp: Comp;
   changeVisibleComp: (comp: Comp) => void;
+  chatOpen: boolean;
+  changeChatOpen: (open: boolean) => void;
   context: Context;
   changeContext: (context: Context) => void;
   initialLoaded: boolean;
@@ -46,21 +48,31 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     { role: string; content: string }[]
   >([]);
   const changeMessageLog = useCallback(
-    (newLog: { role: string; content: string }, type: LogType) => {
-      if (type === "add") setMessageLog((prev) => [...prev, newLog]);
-      if (type === "reset") setMessageLog([newLog]);
-      if (type === "setLast")
-        setMessageLog((prev) => [...prev.slice(0, -1), newLog]);
-      if (type === "context") {
-        setMessageLog((prev) => [newLog, ...prev.slice(1)]);
+    (type: LogType, message?: { role: string; content: string }) => {
+      if (!message) {
+        if (type === "clear") setMessageLog([]);
+      } else {
+        if (type === "add") setMessageLog((prev) => [...prev, message]);
+        if (type === "reset") setMessageLog([message]);
+        if (type === "setLast")
+          setMessageLog((prev) => [...prev.slice(0, -1), message]);
+        if (type === "context") {
+          setMessageLog((prev) => [message, ...prev.slice(1)]);
+        }
       }
     },
     []
   );
 
-  const [visibleComp, setVisibleComp] = useState<Comp>("chat");
+  const [visibleComp, setVisibleComp] = useState<Comp>("accounts");
   const changeVisibleComp = useCallback(
     (newComp: Comp) => setVisibleComp(newComp),
+    []
+  );
+
+  const [chatOpen, setChatOpen] = useState(false);
+  const changeChatOpen = useCallback(
+    (newOpen: boolean) => setChatOpen(newOpen),
     []
   );
 
@@ -82,13 +94,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           `Investment Value - ${context?.investmentValue ?? "N/A"}.`,
       };
 
-      changeMessageLog(contextMessage, "context");
+      changeMessageLog("context", contextMessage);
 
       try {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/chat`, {
           model,
           messages: contextMessage,
-          qInfo: { conversationId: "", parentMessageId: "" },
+          file: visibleComp,
         });
         setInitialLoaded(true);
       } catch (error) {
@@ -97,7 +109,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     };
 
     sendContextMessage();
-  }, [changeMessageLog, context, model]);
+  }, [changeMessageLog, context, model, visibleComp]);
 
   return (
     <AppContext.Provider
@@ -110,6 +122,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         changeMessageLog,
         visibleComp,
         changeVisibleComp,
+        chatOpen,
+        changeChatOpen,
         context,
         changeContext,
         initialLoaded,

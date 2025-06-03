@@ -21,6 +21,7 @@ export const Chat = () => {
     messageLog,
     changeMessageLog,
     initialLoaded,
+    visibleComp,
   } = useAppContext();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -50,8 +51,8 @@ export const Chat = () => {
   };
 
   const handleSubmit = async () => {
-    changeMessageLog({ role: "user", content: input }, "add");
-    changeMessageLog({ role: "assistant", content: "Thinking..." }, "add");
+    changeMessageLog("add", { role: "user", content: input });
+    changeMessageLog("add", { role: "assistant", content: "Thinking..." });
     changeInput("");
     try {
       const response = await axios.post(
@@ -59,12 +60,13 @@ export const Chat = () => {
         {
           model,
           messages: [...messageLog, { role: "user", content: input }],
+          file: visibleComp,
         }
       );
-      changeMessageLog(
-        { role: "assistant", content: response.data.reply },
-        "setLast"
-      );
+      changeMessageLog("setLast", {
+        role: "assistant",
+        content: response.data.reply,
+      });
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -78,14 +80,11 @@ export const Chat = () => {
     const contextMessages = messageLog.filter((m) =>
       m.content.startsWith("CONTEXT:")
     );
-    changeMessageLog(contextMessages[contextMessages.length - 1], "reset");
+    changeMessageLog("reset", contextMessages[contextMessages.length - 1]);
   };
 
   return (
-    <div
-      className="rounded border w-100"
-      style={{ height: `calc(${baseCompHeight})` }}
-    >
+    <div className="rounded w-100 shadow h-100">
       <div
         className="d-flex justify-content-center align-items-center bg-primary-subtle rounded-top p-2"
         style={{ height: "50px" }}

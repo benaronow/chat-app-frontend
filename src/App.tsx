@@ -1,43 +1,28 @@
-import { useMemo } from "react";
-import { useBreakpoint } from "./useBreakpoint";
-import { Chat } from "./components/Chat";
-import { ContextInput } from "./components/ContextInput";
 import { ViewToggle } from "./components/ViewToggle";
 import { useAppContext } from "./providers/AppProvider";
+import { Spending } from "./components/Spending";
+import { Chat } from "./components/Chat";
+import { Accounts } from "./components/Accounts";
 
 function App() {
-  const { breakpoint } = useBreakpoint();
-  const { visibleComp } = useAppContext();
-
-  const showChat = useMemo(
-    () =>
-      ((breakpoint === "base" || breakpoint === "sm") &&
-        visibleComp === "chat") ||
-      (breakpoint !== "base" && breakpoint !== "sm"),
-    [breakpoint, visibleComp]
-  );
-
-  const showContext = useMemo(
-    () =>
-      ((breakpoint === "base" || breakpoint === "sm") &&
-        visibleComp === "context") ||
-      (breakpoint !== "base" && breakpoint !== "sm"),
-    [breakpoint, visibleComp]
-  );
+  const { visibleComp, chatOpen } = useAppContext();
 
   return (
-    <div className="d-flex flex-column">
+    <div className="d-flex flex-column" style={{ height: "100dvh" }}>
       <div
         className="d-flex w-100 justify-content-center align-items-center bg-dark text-white"
-        style={{ height: "50px" }}
+        style={{ height: "50px", minHeight: "50px" }}
       >
         <span className="fs-2 fw-bold">Portal Pete</span>
       </div>
-      <div className="d-flex flex-row p-3 gap-3">
-        {showChat && <Chat />}
-        {showContext && <ContextInput />}
+      <div className="p-3 w-100 h-100 d-flex gap-3">
+        {chatOpen && <Chat />}
+        <div className="w-100 h-100">
+          {visibleComp === "accounts" && <Accounts />}
+          {visibleComp === "spending" && <Spending />}
+        </div>
       </div>
-      {(breakpoint === "base" || breakpoint === "sm") && <ViewToggle />}
+      <ViewToggle />
     </div>
   );
 }
