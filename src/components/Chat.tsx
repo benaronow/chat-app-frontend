@@ -61,7 +61,8 @@ export const Chat = () => {
         {
           model,
           messages: [...messageLog, { role: "user", content: input }],
-          file: visibleComp,
+          filename:
+            visibleComp === "accounts" ? "Accounts.tsx" : "Spending.tsx",
         }
       );
       changeMessageLog("setLast", {
@@ -75,13 +76,6 @@ export const Chat = () => {
 
   const handleModelChange = (e: ChangeEvent<HTMLSelectElement>) => {
     changeModel(e.target.value as Model);
-  };
-
-  const handleClearMessages = () => {
-    const contextMessages = messageLog.filter((m) =>
-      m.content.startsWith("CONTEXT:")
-    );
-    changeMessageLog("reset", contextMessages[contextMessages.length - 1]);
   };
 
   return (
@@ -161,7 +155,7 @@ export const Chat = () => {
         <button
           type="button"
           className="btn btn-secondary d-flex align-items-center fs-5"
-          onClick={handleClearMessages}
+          onClick={() => changeMessageLog("clear")}
           disabled={!initialLoaded || messageLog.length <= 1}
         >
           <GrPowerReset />

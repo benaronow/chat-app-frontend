@@ -30,8 +30,6 @@ interface AppContextProps {
   changeVisibleComp: (comp: Comp) => void;
   chatOpen: boolean;
   changeChatOpen: (open: boolean) => void;
-  context: Context;
-  changeContext: (context: Context) => void;
   initialLoaded: boolean;
 }
 
@@ -76,31 +74,21 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     []
   );
 
-  const [context, setContext] = useState<Context>({});
-  const changeContext = useCallback(
-    (newContext: Context) => setContext(newContext),
-    []
-  );
-
   const [initialLoaded, setInitialLoaded] = useState(false);
 
   useEffect(() => {
-    const sendContextMessage = async () => {
-      const contextMessage = {
+    const sendInitMessage = async () => {
+      const initMessage = {
         role: "user",
-        content:
-          "CONTEXT: " +
-          `Name - ${context?.name ?? "N/A"}, ` +
-          `Investment Value - ${context?.investmentValue ?? "N/A"}.`,
+        content: "dummy message to test connection, please ignore",
       };
-
-      changeMessageLog("context", contextMessage);
 
       try {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/chat`, {
           model,
-          messages: contextMessage,
-          file: visibleComp,
+          messages: initMessage,
+          filename:
+            visibleComp === "accounts" ? "Accounts.tsx" : "Spending.tsx",
         });
         setInitialLoaded(true);
       } catch (error) {
@@ -108,8 +96,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    sendContextMessage();
-  }, [changeMessageLog, context, model, visibleComp]);
+    sendInitMessage();
+  }, [changeMessageLog, model, visibleComp]);
 
   return (
     <AppContext.Provider
@@ -124,8 +112,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         changeVisibleComp,
         chatOpen,
         changeChatOpen,
-        context,
-        changeContext,
         initialLoaded,
       }}
     >
