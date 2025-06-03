@@ -10,12 +10,12 @@ export const Spending = () => {
   return (
     <div className="rounded w-100 shadow" style={{ height: baseCompHeight }}>
       <div
-        className="d-flex justify-content-between align-items-center rounded-top p-2 border-bottom"
+        className="d-flex justify-content-between align-items-center rounded-top p-3 border-bottom"
         style={{ height: "50px" }}
       >
-        <span className="fs-4 fw-bold w-100 ms-1 text-nowrap">Spending</span>
+        <span className="fs-4 fw-bold w-100 text-nowrap">Spending</span>
         <button
-          className="border-0 bg-transparent p-0 me-2"
+          className="border-0 bg-transparent p-0"
           onClick={() => changeChatOpen(true)}
         >
           <img src="/portal-pete.png" height={30} width={30} />

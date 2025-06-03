@@ -13,7 +13,7 @@ export const Accounts = () => {
   return (
     <div className="rounded w-100 shadow" style={{ height: baseCompHeight }}>
       <div
-        className="d-flex justify-content-between align-items-center rounded-top p-2 border-bottom"
+        className="d-flex justify-content-between align-items-center rounded-top p-3 border-bottom"
         style={{ height: "50px" }}
       >
         <span className="fs-4 fw-bold w-100 text-nowrap">Accounts</span>
