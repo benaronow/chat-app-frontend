@@ -85,7 +85,7 @@ export const Chat = () => {
   };
 
   return (
-    <div className="rounded w-100 shadow h-100">
+    <div className="rounded w-100 shadow" style={{ height: baseCompHeight }}>
       <div
         className="d-flex justify-content-center align-items-center bg-primary-subtle rounded-top p-2"
         style={{ height: "50px" }}

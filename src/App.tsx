@@ -3,9 +3,11 @@ import { useAppContext } from "./providers/AppProvider";
 import { Spending } from "./components/spending/Spending";
 import { Chat } from "./components/Chat";
 import { Accounts } from "./components/accounts/Accounts";
+import { useBreakpoint } from "./useBreakpoint";
 
 function App() {
   const { visibleComp, chatOpen } = useAppContext();
+  const { baseCompHeight } = useBreakpoint();
 
   return (
     <div className="d-flex flex-column" style={{ height: "100dvh" }}>
@@ -15,12 +17,13 @@ function App() {
       >
         <span className="fs-2 fw-bold">Portal Pete</span>
       </div>
-      <div className="p-3 w-100 h-100 d-flex gap-3">
+      <div
+        className="p-3 w-100 d-flex flex-column flex-md-row gap-3 overflow-scroll"
+        style={{ height: baseCompHeight }}
+      >
+        {visibleComp === "accounts" && <Accounts />}
+        {visibleComp === "spending" && <Spending />}
         {chatOpen && <Chat />}
-        <div className="w-100 h-100">
-          {visibleComp === "accounts" && <Accounts />}
-          {visibleComp === "spending" && <Spending />}
-        </div>
       </div>
       <ViewToggle />
     </div>
