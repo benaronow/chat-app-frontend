@@ -11,7 +11,11 @@ import axios from "axios";
 import { IoClose, IoSend, IoSettingsSharp } from "react-icons/io5";
 import { GrPowerReset } from "react-icons/gr";
 
-export const Chat = () => {
+interface Props {
+  ref?: React.Ref<HTMLDivElement>;
+}
+
+export const Chat = ({ ref }: Props) => {
   const { baseCompHeight } = useBreakpoint();
   const {
     model,
@@ -77,7 +81,11 @@ export const Chat = () => {
   };
 
   return (
-    <div className="rounded w-100 shadow" style={{ height: baseCompHeight }}>
+    <div
+      className="rounded w-100 shadow"
+      style={{ height: baseCompHeight }}
+      ref={ref}
+    >
       <div
         className="d-flex gap-2 align-items-center bg-primary-subtle rounded-top p-2"
         style={{ height: "50px" }}
