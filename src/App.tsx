@@ -1,8 +1,8 @@
 import { ViewToggle } from "./components/ViewToggle";
 import { useAppContext } from "./providers/AppProvider";
-import { Spending } from "./components/Spending";
+import { Spending } from "./components/spending/Spending";
 import { Chat } from "./components/Chat";
-import { Accounts } from "./components/Accounts";
+import { Accounts } from "./components/accounts/Accounts";
 
 function App() {
   const { visibleComp, chatOpen } = useAppContext();

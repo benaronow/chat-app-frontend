@@ -54,6 +54,7 @@ export const Chat = () => {
     changeMessageLog("add", { role: "user", content: input });
     changeMessageLog("add", { role: "assistant", content: "Thinking..." });
     changeInput("");
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/chat`,

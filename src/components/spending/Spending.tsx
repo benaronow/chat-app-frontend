@@ -1,4 +1,4 @@
-import { useAppContext } from "../providers/AppProvider";
+import { useAppContext } from "../../providers/AppProvider";
 
 export const Spending = () => {
   const { changeChatOpen } = useAppContext();
