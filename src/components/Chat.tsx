@@ -6,22 +6,23 @@ import {
   type KeyboardEvent,
 } from "react";
 import { useBreakpoint } from "../useBreakpoint";
-import { useAppContext, type Model } from "../providers/AppProvider";
+import { useAppContext } from "../providers/AppProvider";
 import axios from "axios";
-import { IoSend } from "react-icons/io5";
+import { IoClose, IoSend, IoSettingsSharp } from "react-icons/io5";
 import { GrPowerReset } from "react-icons/gr";
 
 export const Chat = () => {
   const { baseCompHeight } = useBreakpoint();
   const {
     model,
-    changeModel,
     input,
     changeInput,
     messageLog,
     changeMessageLog,
     initialLoaded,
     visibleComp,
+    changeChatOpen,
+    instructions,
   } = useAppContext();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -61,6 +62,7 @@ export const Chat = () => {
         {
           model,
           messages: [...messageLog, { role: "user", content: input }],
+          instructions,
           filename:
             visibleComp === "accounts" ? "Accounts.tsx" : "Spending.tsx",
         }
@@ -74,35 +76,26 @@ export const Chat = () => {
     }
   };
 
-  const handleModelChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    changeModel(e.target.value as Model);
-  };
-
   return (
     <div className="rounded w-100 shadow" style={{ height: baseCompHeight }}>
       <div
-        className="d-flex justify-content-center align-items-center bg-primary-subtle rounded-top p-2"
+        className="d-flex gap-2 align-items-center bg-primary-subtle rounded-top p-2"
         style={{ height: "50px" }}
       >
         <span className="fs-4 fw-bold w-100 ms-1 text-nowrap">Chat</span>
-        <select
-          className="w-100 form-select"
-          onChange={handleModelChange}
-          defaultValue={model}
+        <button
+          className="btn btn-secondary d-flex align-items-center fs-4"
+          data-bs-toggle="modal"
+          data-bs-target="#settings-dialog"
         >
-          <option value="gpt" label="GPT 4.1 via OpenAI">
-            GPT 4.1 via OpenAI
-          </option>
-          <option
-            value="claude"
-            label="Claude Sonnet 3.5 + Haiku 3.5 via Bedrock"
-          >
-            Claude Sonnet 3.5 + Haiku 3.5 via Bedrock
-          </option>
-          <option value="deepseek" label="Deepseek R1 via Bedrock">
-            Deepseek R1 via Bedrock
-          </option>
-        </select>
+          <IoSettingsSharp />
+        </button>
+        <button
+          className="btn btn-danger d-flex align-items-center fs-4"
+          onClick={() => changeChatOpen(false)}
+        >
+          <IoClose />
+        </button>
       </div>
       <div
         className="d-flex justify-content-center align-items-center w-100"
