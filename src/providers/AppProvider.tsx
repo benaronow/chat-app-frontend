@@ -10,7 +10,7 @@ import {
 
 export type Model = "gpt" | "claude" | "deepseek" | "q";
 type Comp = "accounts" | "spending";
-type LogType = "add" | "reset" | "clear" | "setLast" | "context";
+type LogType = "add" | "clear" | "setLast";
 export type Context = {
   name?: string;
   investmentValue?: string;
@@ -69,12 +69,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         if (type === "clear") setMessageLog([]);
       } else {
         if (type === "add") setMessageLog((prev) => [...prev, message]);
-        if (type === "reset") setMessageLog([message]);
         if (type === "setLast")
           setMessageLog((prev) => [...prev.slice(0, -1), message]);
-        if (type === "context") {
-          setMessageLog((prev) => [message, ...prev.slice(1)]);
-        }
       }
     },
     []

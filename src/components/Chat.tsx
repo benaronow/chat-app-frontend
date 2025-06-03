@@ -110,7 +110,7 @@ export const Chat = () => {
               <img src="/portal-pete.png" height={50} width={50} />
             </div>
             <div
-              className="d-flex flex-column gap-3 rounded-top overflow-scroll py-3 pe-3 w-100"
+              className="d-flex flex-column gap-3 rounded-top overflow-y-scroll py-3 pe-3 w-100"
               style={{ height: `calc(${baseCompHeight} - 100px)` }}
               ref={containerRef}
             >
@@ -120,21 +120,19 @@ export const Chat = () => {
                   minHeight: `calc(${baseCompHeight} - 100px - 2rem)`,
                 }}
               />
-              {messageLog
-                .filter((m) => !m.content?.startsWith("CONTEXT:"))
-                .map((message, index) => (
-                  <div
-                    key={index}
-                    className={`bg-${
-                      message.role === "user" ? "primary" : "secondary"
-                    } text-white px-3 py-2 rounded align-self-${
-                      message.role === "user" ? "end" : "start"
-                    }`}
-                    style={{ maxWidth: "75%" }}
-                  >
-                    {message.content}
-                  </div>
-                ))}
+              {messageLog.map((message, index) => (
+                <div
+                  key={index}
+                  className={`bg-${
+                    message.role === "user" ? "primary" : "secondary"
+                  } text-white px-3 py-2 rounded align-self-${
+                    message.role === "user" ? "end" : "start"
+                  }`}
+                  style={{ maxWidth: "75%" }}
+                >
+                  {message.content}
+                </div>
+              ))}
             </div>
           </>
         ) : (
