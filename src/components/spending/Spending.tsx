@@ -10,7 +10,7 @@ export const Spending = () => {
   return (
     <div className="rounded w-100 shadow" style={{ height: baseCompHeight }}>
       <div
-        className="d-flex justify-content-between align-items-center rounded-top p-2"
+        className="d-flex justify-content-between align-items-center rounded-top p-2 border-bottom"
         style={{ height: "50px" }}
       >
         <span className="fs-4 fw-bold w-100 ms-1 text-nowrap">Spending</span>
@@ -41,7 +41,7 @@ export const Spending = () => {
         </div>
         <div className="mt-3">
           <span className="fs-5">Overall Budget</span>
-          <span className="fs-4">{initialSpending.overallBudget}</span>
+          <span className="fs-4 ms-3">{initialSpending.overallBudget}</span>
         </div>
         <div className="mt-3">
           <span className="fs-5">Recent Transactions</span>

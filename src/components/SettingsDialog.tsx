@@ -1,5 +1,6 @@
 import type { ChangeEvent } from "react";
 import { useAppContext, type Model } from "../providers/AppProvider";
+import { IoClose } from "react-icons/io5";
 
 export const SettingsDialog = () => {
   const { model, changeModel, instructions, changeInstructions } =
@@ -22,11 +23,11 @@ export const SettingsDialog = () => {
               Settings
             </h5>
             <button
-              className="btn btn-danger"
+              className="btn btn-danger d-flex align-items-center fs-4"
               data-bs-dismiss="modal"
               aria-label="Close"
             >
-              <span aria-hidden="true">&times;</span>
+              <IoClose />
             </button>
           </div>
           <div className="modal-body d-flex flex-column">

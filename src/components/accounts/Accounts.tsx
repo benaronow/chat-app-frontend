@@ -13,7 +13,7 @@ export const Accounts = () => {
   return (
     <div className="rounded w-100 shadow" style={{ height: baseCompHeight }}>
       <div
-        className="d-flex justify-content-between align-items-center rounded-top p-2"
+        className="d-flex justify-content-between align-items-center rounded-top p-2 border-bottom"
         style={{ height: "50px" }}
       >
         <span className="fs-4 fw-bold w-100 text-nowrap">Accounts</span>
@@ -35,6 +35,7 @@ export const Accounts = () => {
               <div className="d-flex mb-3 w-100 justify-content-between align-items-center">
                 <span>{accountType.type}</span>
                 <button
+                  className="btn btn-primary"
                   onClick={() =>
                     setAccounts((prev) => [
                       ...prev.filter((a) => a.id !== accountType.id),

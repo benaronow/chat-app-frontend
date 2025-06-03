@@ -20,7 +20,7 @@ function App() {
           <span className="fs-2 fw-bold">Portal Pete</span>
         </div>
         <div
-          className="p-3 w-100 d-flex flex-column flex-md-row gap-3 overflow-scroll"
+          className="p-3 w-100 d-flex flex-column flex-md-row gap-3 overflow-y-scroll"
           style={{ height: baseCompHeight }}
         >
           {visibleComp === "accounts" && <Accounts />}
