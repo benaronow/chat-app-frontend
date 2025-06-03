@@ -5,10 +5,16 @@ import { Chat } from "./components/Chat";
 import { Accounts } from "./components/accounts/Accounts";
 import { useBreakpoint } from "./useBreakpoint";
 import { SettingsDialog } from "./components/SettingsDialog";
+import { useEffect, useRef } from "react";
 
 function App() {
   const { visibleComp, chatOpen } = useAppContext();
   const { baseCompHeight } = useBreakpoint();
+
+  const chatRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    chatRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatOpen]);
 
   return (
     <>
@@ -25,7 +31,7 @@ function App() {
         >
           {visibleComp === "accounts" && <Accounts />}
           {visibleComp === "spending" && <Spending />}
-          {chatOpen && <Chat />}
+          {chatOpen && <Chat ref={chatRef} />}
         </div>
         <ViewToggle />
       </div>
